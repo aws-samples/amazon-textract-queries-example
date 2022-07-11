@@ -1,0 +1,12 @@
+virtualenv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+..
+..
+deactivate
+
+cdk bootstrap
+cdk deploy
+
+Random:
+https://github.com/servian/aws-step-function-example
