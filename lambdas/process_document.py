@@ -1,6 +1,10 @@
 import os
 import boto3
 import shared_constants as sc
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def dump_to_s3(event, answers):
     output_bkt = os.environ[sc.OUTPUT_BKT]
@@ -11,11 +15,11 @@ def dump_to_s3(event, answers):
     s3.put_object(Bucket=output_bkt, Key=s3_obj_name, Body=answers);
     
 def lambda_handler(event, context):
-    print(event)
+    logger.info(event)
     job_id = event['Analyze']['JobId']
     textract = boto3.client('textract')
     response = textract.get_document_analysis(JobId=job_id)
-    print(response)
+    logger.info(response)
     
     # FIXME: This is a big hack
     # perhaps use a hash-table on IDs to store query-result
@@ -24,12 +28,12 @@ def lambda_handler(event, context):
         if block["BlockType"] == "QUERY":
             if 'Relationships' not in block.keys():
                 continue
-            print(block["Query"]["Text"])
+            logger.info(block["Query"]["Text"])
             answers = answers + block["Query"]["Text"] + "|" + block["Query"]["Alias"] + "|"
             for result in response['Blocks']:
                 if result["BlockType"] == "QUERY_RESULT":
                     if block['Relationships'][0]['Ids'][0] == result['Id']:
-                        print(result['Text'] + "\n")
+                        logger.info(result['Text'] + "\n")
                         answers = answers + result['Text'] + "\n"
                         break;
     # dump to S3

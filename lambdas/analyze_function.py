@@ -1,6 +1,10 @@
 import os
 import boto3
 import shared_constants as sc
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def get_task_token_path(key):
     prefix = sc.OUT_TASK_TOKEN_PREFIX
@@ -22,7 +26,7 @@ def process_record(rec, event):
     token = event['token']
     classification = event['input']['Classify']['classification']
     query_config = lookup_query_config(classification)
-    print(query_config)
+    logger.info(query_config)
     input_bucket = rec['s3']['bucket']['name']
     input_file = rec['s3']['object']['key']
     request_id = rec['responseElements']['x-amz-request-id']
@@ -61,7 +65,7 @@ def process_record(rec, event):
 # event handler
 def lambda_handler(event, context):
     # lets just dump it
-    print(event)
+    logger.info(event)
     
     for rec in event['input']['Records']:
         process_record(rec, event)

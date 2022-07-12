@@ -2,21 +2,25 @@ import os
 import boto3
 import json
 import shared_constants as sc
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def main(event, context):
-    print(event)
-    print(context)
+    logger.info(event)
+    logger.info(context)
     sm_arn = os.environ[sc.SF_SM_ARN]
-    print(sm_arn)
+    logger.info(sm_arn)
     stepFunction = boto3.client('stepfunctions')
     
     # Bail out for any non-supported formats
     for rec in event['Records']:
         input_file = rec['s3']['object']['key']
         filename, file_extension = os.path.splitext(input_file)
-        print ("filename: " + filename + ". extension: " + file_extension)
+        logger.info ("filename: " + filename + ". extension: " + file_extension)
         if file_extension not in sc.SUPPORTED_FILES:
-            print("Unsupported file type: " + input_file)
+            logger.warn("Unsupported file type: " + input_file)
             return { 'statusCode': 200, 'body': event }
             
     response = stepFunction.start_execution(

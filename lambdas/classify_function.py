@@ -1,13 +1,17 @@
 import os
 import boto3
 import shared_constants as sc
+import logging
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def get_dump_path(key):
     prefix = sc.OUT_DUMP_PREFIX
     return prefix + "/" + key + ".dump.txt";
 
 def lambda_handler(event, context):
-    print(event)
+    logger.info(event)
     output_bkt = os.environ[sc.OUTPUT_BKT]
     
     s3_obj_name = event['Detection']['DocumentLocation']['S3ObjectName']
@@ -20,7 +24,7 @@ def lambda_handler(event, context):
     for block in response['Blocks']:
         if block['BlockType'] == "LINE":
             dump = dump + block['Text'] + ' '
-    print(dump)
+    logger.info(dump)
     
     # dump to S3
     s3 = boto3.client('s3')
@@ -37,5 +41,5 @@ def lambda_handler(event, context):
         if score > 0.5:
             classification = name
     
-    print(classification)
+    logger.info(classification)
     return {"classification" : classification}
