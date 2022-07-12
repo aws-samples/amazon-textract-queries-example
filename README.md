@@ -112,7 +112,10 @@ When you upload the PDF a [Step Functions](https://console.aws.amazon.com/states
 
 The answers to the questions for a given document will show up in the output S3 bucket (`myprojectstack-s3outputbucketNNNNN`) under the "_answers" folder when the corresponding Step Function is complete.
 
-Now you have successfully ran the sample of a scalable, serverless application stack using CDK as IaC to intelligenly get answers from a document for your questions expressed in natural language.
+The Step Functions flow that has been executed is depicted below:
+![Step Functions flow](/assets/images/step-function-flow.png)
+
+Now you have successfully run the sample of a scalable, serverless application stack using CDK as IaC to intelligently get answers from a document for your questions expressed in natural language.
 
 ## Resources and pricing
 
