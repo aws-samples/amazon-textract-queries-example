@@ -10,9 +10,15 @@ def main(event, context):
     print(sm_arn)
     stepFunction = boto3.client('stepfunctions')
     
-    # TODO: We only support certain file formats
     # Bail out for any non-supported formats
-    
+    for rec in event['Records']:
+        input_file = rec['s3']['object']['key']
+        filename, file_extension = os.path.splitext(input_file)
+        print ("filename: " + filename + ". extension: " + file_extension)
+        if file_extension not in sc.SUPPORTED_FILES:
+            print("Unsupported file type: " + input_file)
+            return { 'statusCode': 200, 'body': event }
+            
     response = stepFunction.start_execution(
         stateMachineArn=sm_arn,
         input = json.dumps(event, indent=4),

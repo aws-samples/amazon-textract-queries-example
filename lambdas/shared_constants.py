@@ -11,6 +11,8 @@ OUT_DUMP_PREFIX ='_dump'
 OUT_ANSWERS_PREFIX='_answers'
 COMPREHEND_EP_ARN = 'COMPREHEND_EP_ARN'
 
+SUPPORTED_FILES = [".pdf", ".png", ".jpg", ".jpeg", ".tiff"]
+
 Payslip_Queries = [
     {
         "Text": "What is the company's name",
