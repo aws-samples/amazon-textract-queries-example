@@ -119,30 +119,31 @@ class MyProjectStack(Stack):
         analyze_topic.add_subscription(_sns_subscriptions.LambdaSubscription(post_analyze_lambda));
         s3OutputBucket.grant_read_write(post_analyze_lambda);
         
+        
+        process_document_l = _lambda.Function(self, 'processDocument',
+                                         handler='process_document.lambda_handler',
+                                         runtime=_lambda.Runtime.PYTHON_3_9,
+                                         environment=lambdaEnv,
+                                         layers=[boto3_lambda_layer],
+                                         code=_lambda.Code.from_asset('./lambdas'))
+        process_document_l.role.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonTextractFullAccess"))
+        s3OutputBucket.grant_read_write(process_document_l)            
+        
         process_payslip_l = _lambda.Function(self, 'processPayslip',
                                          handler='process_payslip.lambda_handler',
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          environment=lambdaEnv,
-                                         layers=[boto3_lambda_layer],
                                          code=_lambda.Code.from_asset('./lambdas'))
-        process_payslip_l.role.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonTextractFullAccess"))
-        s3OutputBucket.grant_read_write(process_payslip_l)
         process_bank_l = _lambda.Function(self, 'processBank',
                                          handler='process_bank.lambda_handler',
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          environment=lambdaEnv,
-                                         layers=[boto3_lambda_layer],
                                          code=_lambda.Code.from_asset('./lambdas'))
-        process_bank_l.role.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonTextractFullAccess"))
-        s3OutputBucket.grant_read_write(process_bank_l)
         process_application_l = _lambda.Function(self, 'processApplication',
                                          handler='process_application.lambda_handler',
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          environment=lambdaEnv,
-                                         layers=[boto3_lambda_layer],
                                          code=_lambda.Code.from_asset('./lambdas'))
-        process_application_l.role.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonTextractFullAccess"))
-        s3OutputBucket.grant_read_write(process_application_l)
         
                                          
         # Step functions Definition
@@ -180,6 +181,15 @@ class MyProjectStack(Stack):
             self, "Succeeded",
             comment='AWS Batch Job succeeded')
 
+
+        process_document_task = _sfn_tasks.LambdaInvoke(
+            self, "Process Document",
+            lambda_function=process_document_l,
+            result_selector = {
+                "tq_status.$":"$.Payload.status"
+            },
+            result_path="$.Process")
+
         process_payslip_task = _sfn_tasks.LambdaInvoke(
             self, "Process Payslip",
             lambda_function=process_payslip_l,
@@ -210,7 +220,7 @@ class MyProjectStack(Stack):
                 .when(_sfn.Condition.string_equals('$.Classify.classification', 'UNKNOWN'), fail_job)
                 .otherwise(analyze_job))
 
-        analyze_job.next(
+        analyze_job.next(process_document_task).next(
             _sfn.Choice(self, 'Analyze Complete?')
                 .when(_sfn.Condition.string_equals('$.Classify.classification', 'PAYSLIP'), process_payslip_task)
                 .when(_sfn.Condition.string_equals('$.Classify.classification', 'BANK'), process_bank_task)

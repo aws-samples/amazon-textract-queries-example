@@ -73,7 +73,40 @@ After deployment is complete (typically 4 - 5 minutes) and the status of the Com
 The set of questions that will be asked against a given document can be inspected here:
 ```
 (.venv) Admin:~/environment/amazon-textract-queries-example (main) $ grep -A 15 Payslip_Queries lambdas/shared_constants.py
+Payslip_Queries = [
+    {
+        "Text": "What is the company's name",
+        "Alias": "PAYSLIP_NAME_COMPANY"
+    },
+    {
+        "Text": "What is the company's ABN number",
+        "Alias": "PAYSLIP_COMPANY_ABN"
+    },
+    {
+        "Text": "What is the employee's name",
+        "Alias": "PAYSLIP_NAME_EMPLOYEE"
+    },
+    {
+        "Text": "What is the annual salary",
+        "Alias": "PAYSLIP_SALARY_ANNUAL"
+
 (.venv) Admin:~/environment/amazon-textract-queries-example (main) $ grep -A 15 Bank_Queries lambdas/shared_constants.py
+Bank_Queries = [
+    {
+        "Text": "What is the name of the banking institution",
+        "Alias": "BANK_NAME"
+    },
+    {
+        "Text": "What is the name of the account holder",
+        "Alias": "BANK_HOLDER_NAME"
+    },
+    {
+        "Text": "What is the account number",
+        "Alias": "BANK_ACCOUNT_NUMBER"
+    },
+    {
+        "Text": "What is the current balance of the bank account",
+        "Alias": "BANK_ACCOUNT_BALANCE"
 ```
 When you upload the PDF a [Step Functions](https://console.aws.amazon.com/states/home) will be triggered. View that to see the flow of the document and the [CloudWatch](https://console.aws.amazon.com/cloudwatch/home) Log groups for the Lambda logs.
 

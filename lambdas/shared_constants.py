@@ -8,6 +8,7 @@ OUT_DETECT_PREFIX = '_detectText'
 OUT_ANALYZE_PREFIX = '_analyzeText'
 OUT_TASK_TOKEN_PREFIX = '_tasks'
 OUT_DUMP_PREFIX ='_dump'
+OUT_ANSWERS_PREFIX='_answers'
 COMPREHEND_EP_ARN = 'COMPREHEND_EP_ARN'
 
 Payslip_Queries = [
