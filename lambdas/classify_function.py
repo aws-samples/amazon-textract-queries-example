@@ -30,7 +30,7 @@ def lambda_handler(event, context):
     comprehend = boto3.client('comprehend')
     comprehend_arn = os.environ[sc.COMPREHEND_EP_ARN]
     response = comprehend.classify_document(Text=dump, EndpointArn=comprehend_arn)
-    classificaton = 'UNKNOWN'
+    classification = 'UNKNOWN'
     if len(response['Classes']) > 0:
         name = response['Classes'][0]['Name']
         score = response['Classes'][0]['Score']
