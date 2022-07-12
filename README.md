@@ -75,7 +75,7 @@ The set of questions that will be asked against a given document can be inspecte
 (.venv) Admin:~/environment/amazon-textract-queries-example (main) $ grep -A 15 Payslip_Queries lambdas/shared_constants.py
 (.venv) Admin:~/environment/amazon-textract-queries-example (main) $ grep -A 15 Bank_Queries lambdas/shared_constants.py
 ```
-When you upload the PDF a [Step Functions](https://console.aws.amazon.com/states/home) will be triggered. View that to see the flow of the document and the [CloudWatch](console.aws.amazon.com/cloudwatch/home) Log groups for the Lambda logs.
+When you upload the PDF a [Step Functions](https://console.aws.amazon.com/states/home) will be triggered. View that to see the flow of the document and the [CloudWatch](https://console.aws.amazon.com/cloudwatch/home) Log groups for the Lambda logs.
 
 The answers to the questions for a given document will show up in the output S3 bucket (`myprojectstack-s3outputbucketNNNNN`) under the "_answers" folder when the corresponding Step Function is complete.
 
