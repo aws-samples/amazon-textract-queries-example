@@ -75,6 +75,7 @@ class MyProjectStack(Stack):
                                          handler='detect_function.lambda_handler',
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          environment=lambdaEnv,
+                                         timeout=Duration.minutes(1),
                                          code=_lambda.Code.from_asset('./lambdas'))
         detect_lambda.role.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonTextractFullAccess"))
         s3InputBucket.grant_read(detect_lambda)
@@ -85,6 +86,7 @@ class MyProjectStack(Stack):
                                               handler='post_detect.lambda_handler',
                                               runtime=_lambda.Runtime.PYTHON_3_9,
                                               environment=lambdaEnv,
+                                              timeout=Duration.minutes(1),
                                               code=_lambda.Code.from_asset('./lambdas'))
         detect_topic.add_subscription(_sns_subscriptions.LambdaSubscription(post_detect_lambda));
         s3OutputBucket.grant_read_write(post_detect_lambda);
@@ -94,6 +96,7 @@ class MyProjectStack(Stack):
                                          handler='classify_function.lambda_handler',
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          environment=lambdaEnv,
+                                         timeout=Duration.minutes(1),
                                          code=_lambda.Code.from_asset('./lambdas'))
         classify_lambda.role.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonTextractFullAccess"))
         classify_lambda.role.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("ComprehendReadOnly"))
@@ -105,6 +108,7 @@ class MyProjectStack(Stack):
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          layers=[boto3_lambda_layer],
                                          environment=lambdaEnv,
+                                         timeout=Duration.minutes(1),
                                          code=_lambda.Code.from_asset('./lambdas'))
         analyze_lambda.role.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonTextractFullAccess"))
         s3InputBucket.grant_read(analyze_lambda)
@@ -115,6 +119,7 @@ class MyProjectStack(Stack):
                                               handler='post_analyze.lambda_handler',
                                               runtime=_lambda.Runtime.PYTHON_3_9,
                                               environment=lambdaEnv,
+                                              timeout=Duration.minutes(1),
                                               code=_lambda.Code.from_asset('./lambdas'))
         analyze_topic.add_subscription(_sns_subscriptions.LambdaSubscription(post_analyze_lambda));
         s3OutputBucket.grant_read_write(post_analyze_lambda);
@@ -125,6 +130,7 @@ class MyProjectStack(Stack):
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          environment=lambdaEnv,
                                          layers=[boto3_lambda_layer],
+                                         timeout=Duration.minutes(1),
                                          code=_lambda.Code.from_asset('./lambdas'))
         process_document_l.role.add_managed_policy(_iam.ManagedPolicy.from_aws_managed_policy_name("AmazonTextractFullAccess"))
         s3OutputBucket.grant_read_write(process_document_l)            
@@ -133,16 +139,19 @@ class MyProjectStack(Stack):
                                          handler='process_payslip.lambda_handler',
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          environment=lambdaEnv,
+                                         timeout=Duration.minutes(1),
                                          code=_lambda.Code.from_asset('./lambdas'))
         process_bank_l = _lambda.Function(self, 'processBank',
                                          handler='process_bank.lambda_handler',
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          environment=lambdaEnv,
+                                         timeout=Duration.minutes(1),
                                          code=_lambda.Code.from_asset('./lambdas'))
         process_application_l = _lambda.Function(self, 'processApplication',
                                          handler='process_application.lambda_handler',
                                          runtime=_lambda.Runtime.PYTHON_3_9,
                                          environment=lambdaEnv,
+                                         timeout=Duration.minutes(1),
                                          code=_lambda.Code.from_asset('./lambdas'))
         
                                          
